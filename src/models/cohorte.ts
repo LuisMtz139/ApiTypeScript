@@ -116,7 +116,6 @@ export const getCohorteBychorte = async (cohorte: string) => {
     return rows;
 }
 
-
 export const obtener_infromacion_general = async(cohorte: string)=>{
     const query = `
         SELECT
