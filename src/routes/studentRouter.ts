@@ -4,6 +4,6 @@ import { getStudentList } from '../controllers/studentController';
 
 const router = Router();
 
-router.get('/',getStudentList);
+router.get('/',getStudentList.bind(getStudentList));
 
 export default router;
