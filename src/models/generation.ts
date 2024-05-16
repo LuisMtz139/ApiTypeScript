@@ -1,6 +1,6 @@
 import db from '../config/database';
 
-export const getAllCorhorte = async () => {
+export const getAllGenerations = async () => {
     const query = `
         SELECT 
             generaciones.generacion,
@@ -51,8 +51,7 @@ export const getAllCorhorte = async () => {
     return rows;
 };
 
-
-export const getCohorteBychorte = async (cohorte: string) => {
+export const getGenerationDetail = async (generation: string) => {
     const query = `
     SELECT 
         generaciones.generacion,
@@ -63,7 +62,7 @@ export const getCohorteBychorte = async (cohorte: string) => {
     FROM (
         SELECT DISTINCT LEFT(matricula, 3) AS generacion 
         FROM estudiantes
-        WHERE LEFT(matricula, 3) = '${cohorte}'
+        WHERE LEFT(matricula, 3) = '${generation}'
         ) AS generaciones
     LEFT JOIN (
         SELECT
@@ -72,7 +71,7 @@ export const getCohorteBychorte = async (cohorte: string) => {
         FROM calificaciones
             INNER JOIN asignaturas ON calificaciones.asignatura_id = asignaturas.id
             INNER JOIN estudiantes ON calificaciones.estudiante_id = estudiantes.id
-        WHERE LEFT(estudiantes.matricula, 3) = '${cohorte}'
+        WHERE LEFT(estudiantes.matricula, 3) = '${generation}'
             AND calificaciones.final < 70
                 GROUP BY LEFT(estudiantes.matricula, 3)
             ) AS rezago ON generaciones.generacion = rezago.generacion
@@ -94,7 +93,7 @@ export const getCohorteBychorte = async (cohorte: string) => {
                         JOIN 
                             periodos p1 ON c.periodo_id = p1.id
                         WHERE 
-                            LEFT(e.matricula, 3) = '${cohorte}'
+                            LEFT(e.matricula, 3) = '${generation}'
                         GROUP BY 
                             LEFT(e.matricula, 3), e.id
                     ) AS titulados ON generaciones.generacion = titulados.generacion
@@ -105,7 +104,7 @@ export const getCohorteBychorte = async (cohorte: string) => {
                         FROM 
                             estudiantes
                         WHERE 
-                            LEFT(matricula, 3) = '${cohorte}'
+                            LEFT(matricula, 3) = '${generation}'
                         GROUP BY 
                             LEFT(matricula, 3)
                     ) AS total_generacion ON generaciones.generacion = total_generacion.generacion
@@ -116,7 +115,7 @@ export const getCohorteBychorte = async (cohorte: string) => {
     return rows;
 }
 
-export const obtener_infromacion_general = async(cohorte: string)=>{
+export const stats = async(cohorte: string)=>{
     const query = `
         SELECT
             (SELECT COUNT(*) FROM estudiantes WHERE matricula LIKE '${cohorte}%') AS total_estudiantes,
