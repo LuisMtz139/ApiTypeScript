@@ -2,27 +2,15 @@ import { QueryResult } from 'mysql2';
 import db from '../config/database';
 
 
-export function getStudentsFactory(generation:string | null) {
 
-    switch(generation) {
-        case null:{
-            return getStudents();
-        }
-        default: {
-            return getStudentByGeneration(generation);
-        }
-    }
-
-}
-
-export async function getStudentByGeneration(generation:string|null){
+export async function getStudentByGeneration(generation: string, limit: number, offset: number) {
     const query = `
         SELECT
-            e.id, 
-            e.matricula,
+            e.id,
+            e.matricula AS student_code,
             e.estatus,
-            e.persona_id,
-            COALESCE(p.nombre, 'Nombre no disponible') AS nombre,
+            e.cuatrimestre_actual AS grade,
+            COALESCE(p.nombre, 'Nombre no disponible') AS name,
             CASE 
                 WHEN EXISTS (
                     SELECT 1
@@ -36,33 +24,30 @@ export async function getStudentByGeneration(generation:string|null){
                     AND NOT (c.final <= 0 AND c.extra <= 0)
                 ) THEN 'Sí'
                 ELSE 'No'
-            END AS tiene_materias_reprobatorias,
-            (SELECT COUNT(*) 
-            FROM estudiantes e_sub 
-            LEFT JOIN personas p_sub ON e_sub.persona_id = p_sub.id 
-            WHERE LEFT(e_sub.matricula, 3) = '${generation}') AS total
+            END AS student_backwardness
         FROM 
             estudiantes e
         LEFT JOIN 
             personas p ON e.persona_id = p.id
         WHERE 
-            LEFT(e.matricula, 3) = '${generation}'
+            LEFT(e.matricula, 3) = ?
         HAVING 
-            nombre != 'Nombre no disponible';
+            name != 'Nombre no disponible'
+        LIMIT ? OFFSET ?;
     `;
-    const [rows] = await db.query(query);
+    const [rows] = await db.query(query, [generation, limit, offset]);
     return rows;
 }
 
-export async function getStudents() {
-    console.log('entreee');
+
+export async function getStudents(limit: number, offset: number) {
     const query = `
-    SELECT
-        e.id, 
-        e.matricula,
-        e.estatus,
-        e.persona_id,
-        COALESCE(p.nombre, 'Nombre no disponible') AS nombre,
+        SELECT
+            e.id,
+            e.matricula AS student_code,
+            e.estatus,
+            e.cuatrimestre_actual AS grade,
+        COALESCE(p.nombre, 'Nombre no disponible') AS name,
         CASE 
             WHEN EXISTS (
                 SELECT 1
@@ -76,15 +61,16 @@ export async function getStudents() {
                 AND NOT (c.final <= 0 AND c.extra <= 0)
             ) THEN 'Sí'
             ELSE 'No'
-        END AS tiene_materias_reprobatorias
+        END AS student_backwardness
         
     FROM 
         estudiantes e
     LEFT JOIN 
         personas p ON e.persona_id = p.id
     HAVING 
-        nombre != 'Nombre no disponible';
+        name != 'Nombre no disponible'
+    LIMIT ? OFFSET ?;
     `;
-    const [rows] = await db.query(query);
+    const [rows] = await db.query(query, [limit, offset]);
     return rows;
 }
