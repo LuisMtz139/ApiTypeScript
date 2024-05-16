@@ -5,6 +5,7 @@ import db from '../config/database';
 
 export async function getStudentByGeneration(generation: string, limit: number, offset: number) {
     const query = `
+    
     SELECT
     e.matricula AS student_code,
     e.estatus AS status,
