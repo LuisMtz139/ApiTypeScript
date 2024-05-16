@@ -22,7 +22,7 @@ app.use('/api/v1/estudiantes',studentRouter );
 
 dotenv.config();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT ;
 
 app.listen(PORT, () => {
 	signale.success(`Server is running on port ${PORT}`)

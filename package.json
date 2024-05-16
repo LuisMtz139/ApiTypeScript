@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/app.js",
   "scripts": {
-    "dev-windows": "concurrently \"tsc -watch\" \"nodemon dist/app.js\"",
+    "start": "concurrently \"tsc -watch\" \"nodemon dist/app.js\"",
     "dev-linux": "tsc -watch & nodemon dist/app.js"
   },
   "keywords": [],
