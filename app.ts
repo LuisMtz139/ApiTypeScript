@@ -5,7 +5,10 @@ import estudianteRoutes from './src/routes/esstudiantesRoutes';
 const app = express();
 
 app.use(express.json());
-app.use('/api', cohorteRoutes);
-app.use('/api',estudianteRoutes );
+
+
+// api/v1
+app.use('/api/v1', cohorteRoutes);
+app.use('/api/v1',estudianteRoutes );
 
 export default app;
