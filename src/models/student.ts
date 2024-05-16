@@ -2,89 +2,67 @@ import { QueryResult } from 'mysql2';
 import db from '../config/database';
 
 
-export function getStudentsFactory(generation:string | null) {
 
-    switch(generation) {
-        case null:{
-            return getStudents();
-        }
-        default: {
-            return getStudentByGeneration(generation);
-        }
-    }
-
-}
-
-export async function getStudentByGeneration(generation:string|null){
+export async function getStudentByGeneration(generation: string, limit: number, offset: number) {
     const query = `
-        SELECT
-            e.id, 
-            e.matricula,
-            e.estatus,
-            e.persona_id,
-            COALESCE(p.nombre, 'Nombre no disponible') AS nombre,
-            CASE 
-                WHEN EXISTS (
-                    SELECT 1
-                    FROM calificaciones c
-                    WHERE c.estudiante_id = e.id
-                    AND (
-                        (c.final IS NOT NULL AND c.final < 70 AND (c.extra IS NULL OR c.extra < 70))
-                        OR
-                        (c.extra IS NOT NULL AND c.extra < 70 AND c.final < 70)
-                    )
-                    AND NOT (c.final <= 0 AND c.extra <= 0)
-                ) THEN 'Sí'
-                ELSE 'No'
-            END AS tiene_materias_reprobatorias,
-            (SELECT COUNT(*) 
-            FROM estudiantes e_sub 
-            LEFT JOIN personas p_sub ON e_sub.persona_id = p_sub.id 
-            WHERE LEFT(e_sub.matricula, 3) = '${generation}') AS total
-        FROM 
-            estudiantes e
-        LEFT JOIN 
-            personas p ON e.persona_id = p.id
-        WHERE 
-            LEFT(e.matricula, 3) = '${generation}'
-        HAVING 
-            nombre != 'Nombre no disponible';
+    SELECT
+    e.matricula AS student_code,
+    e.estatus AS status,
+    e.cuatrimestre_actual AS grade,
+    COALESCE(p.nombre, 'Nombre no disponible') AS name,
+    (
+        (SELECT COUNT(*) 
+         FROM asignaturas 
+         WHERE cuatrimestre <= e.cuatrimestre_actual) -
+        (SELECT COUNT(*) 
+         FROM asignaturas a
+         INNER JOIN calificaciones c ON a.id = c.asignatura_id
+         WHERE c.estatus_asignatura = 'Aprobado' AND c.estudiante_id = e.id)
+    ) AS student_backwardness
+FROM 
+    estudiantes e
+LEFT JOIN 
+    personas p ON e.persona_id = p.id
+WHERE 
+    LEFT(e.matricula, 3) = ?
+HAVING 
+    name != 'Nombre no disponible'
+ORDER BY 
+    p.nombre ASC
+LIMIT ? OFFSET ?;
+
     `;
-    const [rows] = await db.query(query);
+    const [rows] = await db.query(query, [generation, limit, offset]);
     return rows;
 }
 
-export async function getStudents() {
-    console.log('entreee');
+
+export async function getStudents(limit: number, offset: number) {
     const query = `
     SELECT
-        e.id, 
-        e.matricula,
-        e.estatus,
-        e.persona_id,
-        COALESCE(p.nombre, 'Nombre no disponible') AS nombre,
-        CASE 
-            WHEN EXISTS (
-                SELECT 1
-                FROM calificaciones c
-                WHERE c.estudiante_id = e.id
-                AND (
-                    (c.final IS NOT NULL AND c.final < 70 AND (c.extra IS NULL OR c.extra < 70))
-                    OR
-                    (c.extra IS NOT NULL AND c.extra < 70 AND c.final < 70)
-                )
-                AND NOT (c.final <= 0 AND c.extra <= 0)
-            ) THEN 'Sí'
-            ELSE 'No'
-        END AS tiene_materias_reprobatorias
-        
-    FROM 
-        estudiantes e
-    LEFT JOIN 
-        personas p ON e.persona_id = p.id
-    HAVING 
-        nombre != 'Nombre no disponible';
+        e.matricula as student_code,
+        e.estatus AS status,
+        e.cuatrimestre_actual as grade,
+    COALESCE(p.nombre, 'Nombre no disponible') AS name,
+    (
+        (SELECT COUNT(*) 
+         FROM asignaturas 
+         WHERE cuatrimestre <= e.cuatrimestre_actual) -
+        (SELECT COUNT(*) 
+         FROM asignaturas a
+         INNER JOIN calificaciones c ON a.id = c.asignatura_id
+         WHERE c.estatus_asignatura = 'Aprobado' AND c.estudiante_id = e.id)
+    ) AS student_backwardness
+FROM 
+    estudiantes e
+LEFT JOIN 
+    personas p ON e.persona_id = p.id
+HAVING 
+    name != 'Nombre no disponible'
+ORDER BY 
+    p.nombre ASC
+    LIMIT ? OFFSET ?;
     `;
-    const [rows] = await db.query(query);
+    const [rows] = await db.query(query, [limit, offset]);
     return rows;
 }
