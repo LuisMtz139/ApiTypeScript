@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "dist/app.js",
   "scripts": {
-    "dev": "tsc -watch & nodemon dist/app.js"
+    "dev-windows": "concurrently \"tsc -watch\" \"nodemon dist/app.js\"",
+    "dev-linux": "tsc -watch & nodemon dist/app.js"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@types/amqplib": "^0.10.4",
-    "@types/morgan": "^1.9.9"
+    "@types/morgan": "^1.9.9",
+    "concurrently": "^8.2.2"
   }
 }
