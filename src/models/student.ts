@@ -3,19 +3,21 @@ import db from '../config/database';
 
 
 export function getStudentsFactory(generation:string | null) {
-
+    console.log('entreee'+ generation);
     switch(generation) {
         case null:{
-            return getStudentByGeneration(generation);
+            return getStudents();
+            
         }
         default: {
-            return getStudents();
+            return getStudentByGeneration(generation);
         }
     }
 
 }
 
 export async function getStudentByGeneration(generation:string|null){
+    console.log('entreee'+ generation);
     const query = `
         SELECT
             e.id, 
@@ -55,6 +57,7 @@ export async function getStudentByGeneration(generation:string|null){
 }
 
 export async function getStudents() {
+    console.log('entreee');
     const query = `
         SELECT
             e.id, 
