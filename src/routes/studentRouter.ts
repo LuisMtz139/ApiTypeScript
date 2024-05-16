@@ -1,9 +1,11 @@
 import { Router } from 'express';
-import { getStudentList } from '../controllers/studentController';
+import { StudentController } from '../controllers/studentController';
+
+const studentController = new StudentController();
 
 
 const router = Router();
 
-router.get('/',getStudentList.bind(getStudentList));
+router.get('/',studentController.getStudentsList.bind(studentController));
 
 export default router;
