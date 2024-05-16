@@ -14,5 +14,5 @@ export class StudentController {
             res.status(error.http_status ?? 500 ).json({ message: 'Error', error });
         }
     }
-
+    
 }
