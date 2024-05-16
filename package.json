@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "dist/app.js",
   "scripts": {
-    "start": "concurrently \"tsc -watch\" \"nodemon dist/app.js\"",
+    "dev": "concurrently \"tsc -watch\" \"nodemon dist/app.js\"",
+    "start": "nodemon dist/app.js",
+    "build": "tsc",
     "dev-linux": "tsc -watch & nodemon dist/app.js"
   },
   "keywords": [],
@@ -26,13 +28,13 @@
     "nodemon": "^3.0.1",
     "signale": "^1.4.0",
     "ts-node": "^10.9.1",
-    "typescript": "^5.2.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/amqplib": "^0.10.4",
     "@types/cors": "^2.8.17",
     "@types/morgan": "^1.9.9",
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "typescript": "^5.4.5"
   }
 }
