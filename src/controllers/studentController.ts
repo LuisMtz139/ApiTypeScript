@@ -3,10 +3,9 @@ import * as student from '../models/student';
 export class StudentController {
 
     async getStudentsList(req:Request, res:Response) {
-        console.log(req.query)
         try {
             const {cohorte} = req.query;
-            const students = await student.getStudentsFactory(cohorte);
+            const students = await student.getStudentsFactory(cohorte?.toString() || null);
             res.status(200).json({
                 data:students,
                 message:"api.v1.students"
