@@ -12,8 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getstudentInfo = exports.studentInfo = exports.getStudents = exports.getStudentByGeneration = void 0;
+exports.updateStudentInfo = exports.getstudentInfo = exports.studentInfo = exports.getStudents = exports.getStudentByGeneration = void 0;
 const database_1 = __importDefault(require("../config/database"));
+const class_validator_1 = require("class-validator");
 function getStudentByGeneration(generation, limit, offset) {
     return __awaiter(this, void 0, void 0, function* () {
         const query = `
@@ -159,3 +160,134 @@ function getstudentInfo(matricula) {
     });
 }
 exports.getstudentInfo = getstudentInfo;
+function updateStudentInfo(matricula, studentData, studentAddressData, tutorData, tutorAddressData) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // Validar los DTOs
+        const studentErrors = yield (0, class_validator_1.validate)(studentData);
+        const studentAddressErrors = yield (0, class_validator_1.validate)(studentAddressData);
+        const tutorErrors = yield (0, class_validator_1.validate)(tutorData);
+        const tutorAddressErrors = yield (0, class_validator_1.validate)(tutorAddressData);
+        // Si hay errores de validación, lanzarlos
+        if (studentErrors.length > 0) {
+            throw new Error(`Validation failed for student data: ${studentErrors}`);
+        }
+        if (studentAddressErrors.length > 0) {
+            throw new Error(`Validation failed for student address data: ${studentAddressErrors}`);
+        }
+        if (tutorErrors.length > 0) {
+            throw new Error(`Validation failed for tutor data: ${tutorErrors}`);
+        }
+        if (tutorAddressErrors.length > 0) {
+            throw new Error(`Validation failed for tutor address data: ${tutorAddressErrors}`);
+        }
+        const updateStudentQuery = `
+    UPDATE personas
+    SET 
+        nombre = ?,
+        apellido_paterno = ?,
+        apellido_materno = ?,
+        telefono = ?,
+        curp = ?,
+        sexo = ?
+    WHERE id = (
+        SELECT persona_id 
+        FROM estudiantes 
+        WHERE matricula = ?
+    );
+    `;
+        const updateStudentAddressQuery = `
+    UPDATE direcciones
+    SET 
+        calle_1 = ?,
+        calle_2 = ?,
+        numero_interior = ?,
+        numero_exterior = ?,
+        colonia = ?,
+        ciudad = ?,
+        codigo_postal = ?,
+        referencias_direccion = ?
+    WHERE persona_id = (
+        SELECT persona_id 
+        FROM estudiantes 
+        WHERE matricula = ?
+    );
+    `;
+        const updateTutorQuery = `
+    UPDATE personas
+    SET 
+        nombre = ?,
+        apellido_paterno = ?,
+        apellido_materno = ?,
+        telefono = ?,
+        curp = ?,
+        sexo = ?
+    WHERE id = (
+        SELECT tuto_familiar_id 
+        FROM estudiantes 
+        WHERE matricula = ?
+    );
+    `;
+        const updateTutorAddressQuery = `
+    UPDATE direcciones
+    SET 
+        calle_1 = ?,
+        calle_2 = ?,
+        numero_interior = ?,
+        numero_exterior = ?,
+        colonia = ?,
+        ciudad = ?,
+        codigo_postal = ?,
+        referencias_direccion = ?
+    WHERE persona_id = (
+        SELECT tuto_familiar_id 
+        FROM estudiantes 
+        WHERE matricula = ?
+    );
+    `;
+        // Actualizar datos del estudiante
+        yield database_1.default.query(updateStudentQuery, [
+            studentData.nombre,
+            studentData.apellido_paterno,
+            studentData.apellido_materno,
+            studentData.telefono,
+            studentData.curp,
+            studentData.sexo,
+            matricula
+        ]);
+        // Actualizar dirección del estudiante
+        yield database_1.default.query(updateStudentAddressQuery, [
+            studentAddressData.calle_1,
+            studentAddressData.calle_2,
+            studentAddressData.numero_interior,
+            studentAddressData.numero_exterior,
+            studentAddressData.colonia,
+            studentAddressData.ciudad,
+            studentAddressData.codigo_postal,
+            studentAddressData.referencias_direccion,
+            matricula
+        ]);
+        // Actualizar datos del tutor
+        yield database_1.default.query(updateTutorQuery, [
+            tutorData.nombre,
+            tutorData.apellido_paterno,
+            tutorData.apellido_materno,
+            tutorData.telefono,
+            tutorData.curp,
+            tutorData.sexo,
+            matricula
+        ]);
+        // Actualizar dirección del tutor
+        yield database_1.default.query(updateTutorAddressQuery, [
+            tutorAddressData.calle_1,
+            tutorAddressData.calle_2,
+            tutorAddressData.numero_interior,
+            tutorAddressData.numero_exterior,
+            tutorAddressData.colonia,
+            tutorAddressData.ciudad,
+            tutorAddressData.codigo_postal,
+            tutorAddressData.referencias_direccion,
+            matricula
+        ]);
+    });
+}
+exports.updateStudentInfo = updateStudentInfo;

@@ -1,5 +1,7 @@
 import { QueryResult } from 'mysql2';
 import db from '../config/database';
+import { UpdateStudentAddressDTO, UpdateStudentDTO, UpdateTutorAddressDTO, UpdateTutorDTO } from '../dto/updateInfoStudent';
+import { validate } from 'class-validator';
 
 
 
@@ -141,4 +143,148 @@ export async function getstudentInfo(matricula: string) {
 
     const results = await db.query(query, [matricula]);
     return results[0];
+}
+
+export async function updateStudentInfo(
+    matricula: string,
+    studentData: UpdateStudentDTO,
+    studentAddressData: UpdateStudentAddressDTO,
+    tutorData: UpdateTutorDTO,
+    tutorAddressData: UpdateTutorAddressDTO
+) {
+    // Validar los DTOs
+    const studentErrors = await validate(studentData);
+    const studentAddressErrors = await validate(studentAddressData);
+    const tutorErrors = await validate(tutorData);
+    const tutorAddressErrors = await validate(tutorAddressData);
+
+    // Si hay errores de validación, lanzarlos
+    if (studentErrors.length > 0) {
+        throw new Error(`Validation failed for student data: ${studentErrors}`);
+    }
+    if (studentAddressErrors.length > 0) {
+        throw new Error(`Validation failed for student address data: ${studentAddressErrors}`);
+    }
+    if (tutorErrors.length > 0) {
+        throw new Error(`Validation failed for tutor data: ${tutorErrors}`);
+    }
+    if (tutorAddressErrors.length > 0) {
+        throw new Error(`Validation failed for tutor address data: ${tutorAddressErrors}`);
+    }
+
+    const updateStudentQuery = `
+    UPDATE personas
+    SET 
+        nombre = ?,
+        apellido_paterno = ?,
+        apellido_materno = ?,
+        telefono = ?,
+        curp = ?,
+        sexo = ?
+    WHERE id = (
+        SELECT persona_id 
+        FROM estudiantes 
+        WHERE matricula = ?
+    );
+    `;
+
+    const updateStudentAddressQuery = `
+    UPDATE direcciones
+    SET 
+        calle_1 = ?,
+        calle_2 = ?,
+        numero_interior = ?,
+        numero_exterior = ?,
+        colonia = ?,
+        ciudad = ?,
+        codigo_postal = ?,
+        referencias_direccion = ?
+    WHERE persona_id = (
+        SELECT persona_id 
+        FROM estudiantes 
+        WHERE matricula = ?
+    );
+    `;
+
+    const updateTutorQuery = `
+    UPDATE personas
+    SET 
+        nombre = ?,
+        apellido_paterno = ?,
+        apellido_materno = ?,
+        telefono = ?,
+        curp = ?,
+        sexo = ?
+    WHERE id = (
+        SELECT tuto_familiar_id 
+        FROM estudiantes 
+        WHERE matricula = ?
+    );
+    `;
+
+    const updateTutorAddressQuery = `
+    UPDATE direcciones
+    SET 
+        calle_1 = ?,
+        calle_2 = ?,
+        numero_interior = ?,
+        numero_exterior = ?,
+        colonia = ?,
+        ciudad = ?,
+        codigo_postal = ?,
+        referencias_direccion = ?
+    WHERE persona_id = (
+        SELECT tuto_familiar_id 
+        FROM estudiantes 
+        WHERE matricula = ?
+    );
+    `;
+
+    // Actualizar datos del estudiante
+    await db.query(updateStudentQuery, [
+        studentData.nombre,
+        studentData.apellido_paterno,
+        studentData.apellido_materno,
+        studentData.telefono,
+        studentData.curp,
+        studentData.sexo,
+        matricula
+    ]);
+
+    // Actualizar dirección del estudiante
+    await db.query(updateStudentAddressQuery, [
+        studentAddressData.calle_1,
+        studentAddressData.calle_2,
+        studentAddressData.numero_interior,
+        studentAddressData.numero_exterior,
+        studentAddressData.colonia,
+        studentAddressData.ciudad,
+        studentAddressData.codigo_postal,
+        studentAddressData.referencias_direccion,
+        matricula
+    ]);
+
+    // Actualizar datos del tutor
+    await db.query(updateTutorQuery, [
+        tutorData.nombre,
+        tutorData.apellido_paterno,
+        tutorData.apellido_materno,
+        tutorData.telefono,
+        tutorData.curp,
+        tutorData.sexo,
+        matricula
+    ]);
+
+    // Actualizar dirección del tutor
+    await db.query(updateTutorAddressQuery, [
+        tutorAddressData.calle_1,
+        tutorAddressData.calle_2,
+        tutorAddressData.numero_interior,
+        tutorAddressData.numero_exterior,
+        tutorAddressData.colonia,
+        tutorAddressData.ciudad,
+        tutorAddressData.codigo_postal,
+        tutorAddressData.referencias_direccion,
+        matricula
+    ]);
 }
