@@ -6,7 +6,7 @@
     "dev-windows": "concurrently \"tsc -watch\" \"nodemon dist/app.js\"",
     "dependences": "npm install",
     "start": "node dist/app.js",
-    "build": "npm install --only=dev && tsc",
+    "build": "npm install --include=dev && tsc",
     "dev-linux": "tsc -watch & nodemon dist/app.js"
   },
   "keywords": [],
