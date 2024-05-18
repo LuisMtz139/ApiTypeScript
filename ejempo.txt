@@ -1,14 +1,226 @@
-{
-                    student_code:"211162",
-                    name:"Jesús Alberto Gonzalez Gutierrez",
-                    status:"Inscrito",
-                    student_backwardness:1,
-                    grade:9
-                },
-                {
-                    student_code:"211162",
-                    name:"Jesús Alberto Gonzalez Gutierrez",
-                    status:"Inscrito",
-                    student_backwardness:1,
-                    grade:9
-                },
+
+
+
+select * from asignaturas;
+
+SELECT nombre, cuatrimestre
+FROM asignaturas
+ORDER BY cuatrimestre + 0 ASC;
+
+
+
+   
+   
+   select
+	periodos.periodo,
+	periodos.anio as periodo_año,
+	asignaturas.nombre as asignatura,
+	asignaturas.cuatrimestre as asignatura_cuatrimestre,
+	asignaturas.creditos as asignatura_creditos_logrados,
+	calificaciones.cardex,
+	calificaciones.ordinario_1 as corte1,
+	calificaciones.ordinario_2 as corte2,
+	calificaciones.ordinario_3 as corte2,
+	calificaciones.recuperacion_1 as recu1,
+	calificaciones.recuperacion_2 as recu2,
+	calificaciones.recuperacion_3 as recu3,
+	calificaciones.final as calificacion_final,
+	calificaciones.extra as calificacion_extraordinaria
+from calificaciones
+inner join periodos on calificaciones.periodo_id  = periodos.id
+inner join asignaturas on calificaciones.asignatura_id = asignaturas.id
+where calificaciones.estudiante_id = (
+	select id from estudiantes where matricula ="211105"
+);
+   
+   
+   
+   
+   
+   
+ -- estudaintes 
+ -- matricula, cuatrimestre
+ -- personas 
+ -- nombre 
+
+select *  from estudiantes e  where matricula = 211105;
+select * from docentes d where id = 17;
+select  * from personas p where id = 17;
+select  * from direcciones d where persona_id = 17;
+
+	create table direcciones (
+		id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+		codigo_postal VARCHAR(10),
+		ciudad VARCHAR(255),
+		colonia VARCHAR(255),
+		numero_interior VARCHAR(50),
+		numero_exterior VARCHAR(50),
+		calle_1 VARCHAR(255) NULL,
+		calle_2 VARCHAR (255) NULL,
+		referencias_direccion TEXT NULL,
+		persona_id BIGINT UNSIGNED,
+		FOREIGN KEY (persona_id) REFERENCES personas(id)
+	);
+
+insert into direcciones (codigo_postal,ciudad,colonia,numero_interior,numero_exterior,calle_1, calle_2,referencias_direccion,persona_id )
+values ('29130', 'mexico','mexico','direcciones' ,'numero_exterior','calle_1', 'calle_2','referencias_direccion',2219 );
+
+
+SELECT 
+    e.matricula,
+    p.telefono AS numero_telefonico,
+    p.nombre,
+    p.curp,
+    p.sexo,
+    d2.calle_1 AS calle_estudiante,
+    d2.ciudad AS ciudad_estudiante,
+    d2.codigo_postal AS codigo_postal_estudiante,
+    dp.nombre AS nombre_tutor,
+    dp.telefono AS telefono_docente,
+    dp.curp AS curp_docente,
+    dp.sexo AS sexo_docente
+
+FROM 
+    estudiantes e
+JOIN 
+    personas p ON e.persona_id = p.id
+JOIN 
+    direcciones d2 ON p.id = d2.persona_id 
+JOIN 
+    docentes d ON e.tutor_academico_id = d.id
+JOIN 
+    personas dp ON dp.id = d.persona_id
+
+WHERE 
+    e.matricula = '211105'; 
+
+select * from calificaciones c ;
+
+select * from estudiantes e ;
+select * from asignaturas a ;
+select * from planes p ;
+select * from periodos p ;
+select * from grupos g ;
+
+SELECT 
+    a.nombre AS asignatura,
+    a.cuatrimestre,
+    c.ordinario_1,
+    c.ordinario_2,
+    c.ordinario_3,
+    c.recuperacion_1,
+    c.recuperacion_2,
+    c.recuperacion_3,
+    CASE 
+        WHEN c.extra = -1 THEN 0 
+        ELSE c.extra 
+    END AS extra,
+    c.`final`
+FROM calificaciones c
+JOIN estudiantes e ON e.id = c.estudiante_id
+JOIN asignaturas a ON a.id = c.asignatura_id
+WHERE e.matricula = 211105;
+
+
+
+   
+  
+-- obtener todos los docentes  
+
+select 
+	d.id,
+	p.nombre , 
+	p.apellido_paterno ,
+	p.apellido_materno , 
+	p.telefono , 
+	p.curp , 
+	p.sexo 
+from docentes d 
+join personas p on d.persona_id = p.id ;
+
+
+-- obetener docentes por un nombre
+select 
+	d.id,
+	p.nombre , 
+	p.apellido_paterno ,
+	p.apellido_materno , 
+	p.telefono , 
+	p.curp , 
+	p.sexo 
+from docentes d 
+join personas p on d.persona_id = p.id 
+where p.nombre like  '%CRIsTINA%';
+
+
+
+-- obtener docentes y sus materias
+
+
+select * from docentes d ;
+select * from personas p ;
+select * from asignaturas a ;
+select * from planes p ;
+select * from grupos g ;
+select * from estudiantes e ;
+
+
+
+
+a
+select 
+	d.id,
+	p.nombre , 
+	g.grupo ,
+	a.nombre ,
+	a.abreviatura ,
+	a.cuatrimestre ,
+	a.horas_semana,
+	a.total_horas 
+from docentes d 
+join personas p on d.persona_id = p.id 
+join grupos g  on g.docente_id = d.id 
+join asignaturas a  on a.id = g.asignatura_id 
+where p.nombre like  '%Car%';
+
+
+
+-- Obtener al maestro, grupo , estudiantes
+
+select 
+	d.id,
+	p.nombre , 
+	g.grupo ,
+	a.nombre ,
+	a.abreviatura ,
+	a.cuatrimestre ,
+	a.horas_semana,
+	a.total_horas 
+from docentes d 
+join personas p on d.persona_id = p.id 
+join grupos g  on g.docente_id = d.id 
+join asignaturas a  on a.id = g.asignatura_id 
+join 
+where p.nombre like  '%Car%';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+docentes
+    Obtener los docentes 

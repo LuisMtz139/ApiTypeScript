@@ -12,3 +12,6 @@ export const listSubjects = async(limit: number, offset: number) => {
     const [rows] = await db.query(query, [limit, offset]);
     return rows;
 };
+
+
+
