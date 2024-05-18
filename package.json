@@ -4,7 +4,7 @@
   "main": "dist/app.js",
   "scripts": {
     "dev-windows": "concurrently \"tsc -watch\" \"nodemon dist/app.js\"",
-    "start": "tsc && nodemon dist/app.js",
+    "start": "npm install && tsc && nodemon dist/app.js",
     "build": "tsc",
     "dev-linux": "tsc -watch & nodemon dist/app.js"
   },
