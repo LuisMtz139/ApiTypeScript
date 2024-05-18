@@ -41,10 +41,14 @@ export async function sendEmail(cohorte: string) {
 }
 
 export async function verifyEmail(token: string) {
-    console.log('token:', token);
+    console.log('tokenssssssssss:', token);
     if (token === generatedToken) {
         console.log('Email verified successfully');
+        return 'successPage.html';
+
     } else {
         console.log('Email verification failed');
+        return 'errorPage.html';
+
     }
 }

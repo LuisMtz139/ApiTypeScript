@@ -51,12 +51,14 @@ function sendEmail(cohorte) {
 exports.sendEmail = sendEmail;
 function verifyEmail(token) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('token:', token);
+        console.log('tokenssssssssss:', token);
         if (token === generatedToken) {
             console.log('Email verified successfully');
+            return 'successPage.html';
         }
         else {
             console.log('Email verification failed');
+            return 'errorPage.html';
         }
     });
 }
