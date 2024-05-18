@@ -6,7 +6,8 @@ import { Signale } from "signale";
 
 import cohorteRoutes from './routes/generationRouter';
 import studentRouter from './routes/studentRouter';
-
+import subjectsRouter from './routes/subjectsRouter';
+import personaRouter from './routes/emailRouter';
 
 const app = express();
 const signale = new Signale();
@@ -18,7 +19,8 @@ app.use(morgan('dev'));
 
 app.use('/api/v1/cohortes', cohorteRoutes);
 app.use('/api/v1/estudiantes',studentRouter );
-
+app.use('/api/v1/subjects',subjectsRouter );
+app.use('/api/v1/email', personaRouter);
 
 dotenv.config();
 

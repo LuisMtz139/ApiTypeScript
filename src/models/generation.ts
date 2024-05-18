@@ -1,6 +1,6 @@
 import db from '../config/database';
 
-export const getAllGenerations = async () => {
+export const getAllGenerations = async (limit: number, offset: number) => {
     const query = `
         SELECT 
             generaciones.generacion,
@@ -44,10 +44,11 @@ export const getAllGenerations = async () => {
                 LEFT(e.matricula, 3), e.id
         ) AS titulados ON generaciones.generacion = titulados.generacion
         WHERE rezago.cantidad_estudiantes_con_rezago > 0
-        GROUP BY generaciones.generacion;
+        GROUP BY generaciones.generacion
+        LIMIT ? OFFSET ?;
     `;
 
-    const [rows] = await db.query(query);
+    const [rows] = await db.query(query, [limit, offset]);
     return rows;
 };
 

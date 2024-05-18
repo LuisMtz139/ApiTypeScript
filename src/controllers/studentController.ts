@@ -42,4 +42,16 @@ export class StudentController {
         }
     }
 
+    async studentsInfoMaterias(req: Request, res: Response) {
+
+        try {
+            const { matricula } = req.params;
+            const studenst = await student.studentInfo(matricula?.toString() ?? '');
+            res.json(studenst);
+        } catch (error: any) {
+            res.status(error.http_status ?? 500).json({ message: 'Error', error });
+        }
+
+    }
+
 }
