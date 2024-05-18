@@ -1,5 +1,11 @@
 import { Request, Response } from 'express';
 import * as student from '../models/student';
+import jwt from 'jsonwebtoken';
+
+interface DecodedToken {
+    matricula: string;
+    [key: string]: any;
+}
 
 export class StudentController {
 
@@ -54,4 +60,39 @@ export class StudentController {
 
     }
 
+
+    async getInfoStudents(req: Request, res: Response) {
+        console.log("hola")
+            try {
+                const token = req.params.token || req.query.token;
+
+                if (!token || typeof token !== 'string') {
+                    return res.status(400).json({ message: 'Token is missing or invalid' });
+                }
+
+                // Verifica y decodifica el token
+                jwt.verify(token, "your-256-bit-secret", async (err, decoded) => {
+                    if (err) {
+                        return res.status(401).json({ message: 'Invalid token', error: err.message });
+                    }
+
+                    // Asegúrate de que el token decodificado tiene la estructura esperada
+                    const decodedToken = decoded as DecodedToken;
+                    console.log(decodedToken)
+                    if (!decodedToken.matricula) {
+                        return res.status(400).json({ message: 'Matricula is missing in the token' });
+                    }
+
+                    // Realiza la consulta con la matrícula obtenida del token decodificado
+                    try {
+                        const status = await student.getstudentInfo(decodedToken.matricula);
+                        res.status(200).json({ message: 'Token received', payload: decodedToken, studentStatus: status });
+                    } catch (queryError: any) {
+                        res.status(500).json({ message: 'Error querying student info', error: queryError.message });
+                    }
+                });
+            } catch (error: any) {
+                res.status(500).json({ message: 'Internal server error', error: error.message });
+            }
+    }
 }
