@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import * as student from '../models/student';
 import jwt from 'jsonwebtoken';
+import { plainToClass } from 'class-transformer';
+import { UpdateStudentAddressDTO, UpdateStudentDTO, UpdateTutorAddressDTO, UpdateTutorDTO } from '../dto/updateInfoStudent';
+import { validate } from 'class-validator';
 
 interface DecodedToken {
     matricula: string;
@@ -94,5 +97,42 @@ export class StudentController {
             } catch (error: any) {
                 res.status(500).json({ message: 'Internal server error', error: error.message });
             }
+    }
+
+    async  updateStudentController(req: Request, res: Response) {
+        console.log("Recibiendo datos para actualizar información del estudiante");
+    
+        try {
+            const { matricula, studentData, studentAddressData, tutorData, tutorAddressData } = req.body;
+    
+            // Transformar y validar los datos del estudiante
+            const studentDataDTO = plainToClass(UpdateStudentDTO, studentData);
+            const studentAddressDataDTO = plainToClass(UpdateStudentAddressDTO, studentAddressData);
+            const tutorDataDTO = plainToClass(UpdateTutorDTO, tutorData);
+            const tutorAddressDataDTO = plainToClass(UpdateTutorAddressDTO, tutorAddressData);
+    
+            const studentErrors = await validate(studentDataDTO);
+            const studentAddressErrors = await validate(studentAddressDataDTO);
+            const tutorErrors = await validate(tutorDataDTO);
+            const tutorAddressErrors = await validate(tutorAddressDataDTO);
+    
+            // Si hay errores de validación, responder con los errores
+            if (studentErrors.length > 0 || studentAddressErrors.length > 0 || tutorErrors.length > 0 || tutorAddressErrors.length > 0) {
+                return res.status(400).json({
+                    studentErrors,
+                    studentAddressErrors,
+                    tutorErrors,
+                    tutorAddressErrors
+                });
+            }
+    
+            // Llamar a la función de servicio para actualizar la información
+            const updatestudent = await student.updateStudentInfo(matricula, studentDataDTO, studentAddressDataDTO, tutorDataDTO, tutorAddressDataDTO);
+    
+            res.status(200).json({ message: 'Student info updated successfully' });
+        } catch (error: any) {
+            console.error('Error updating student info:', error);
+            res.status(500).json({ message: 'Internal server error', error: error.message });
+        }
     }
 }

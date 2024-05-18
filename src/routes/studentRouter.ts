@@ -10,6 +10,8 @@ router.get('/',studentController.getStudentsList.bind(studentController));
 router.get('/cohorte', studentController.getStudentByCohorte.bind(studentController));
 router.get('/info/:matricula', studentController.studentsInfoMaterias.bind(studentController));
 router.get('/info/student/:token', studentController.getInfoStudents.bind(studentController));
+router.put('/info/student/', studentController.updateStudentController.bind(studentController));
+
 
 
 export default router;

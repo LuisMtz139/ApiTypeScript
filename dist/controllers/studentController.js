@@ -38,6 +38,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StudentController = void 0;
 const student = __importStar(require("../models/student"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const class_transformer_1 = require("class-transformer");
+const updateInfoStudent_1 = require("../dto/updateInfoStudent");
+const class_validator_1 = require("class-validator");
 class StudentController {
     getStudentsList(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -125,6 +128,39 @@ class StudentController {
                 }));
             }
             catch (error) {
+                res.status(500).json({ message: 'Internal server error', error: error.message });
+            }
+        });
+    }
+    updateStudentController(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("Recibiendo datos para actualizar información del estudiante");
+            try {
+                const { matricula, studentData, studentAddressData, tutorData, tutorAddressData } = req.body;
+                // Transformar y validar los datos del estudiante
+                const studentDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateStudentDTO, studentData);
+                const studentAddressDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateStudentAddressDTO, studentAddressData);
+                const tutorDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateTutorDTO, tutorData);
+                const tutorAddressDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateTutorAddressDTO, tutorAddressData);
+                const studentErrors = yield (0, class_validator_1.validate)(studentDataDTO);
+                const studentAddressErrors = yield (0, class_validator_1.validate)(studentAddressDataDTO);
+                const tutorErrors = yield (0, class_validator_1.validate)(tutorDataDTO);
+                const tutorAddressErrors = yield (0, class_validator_1.validate)(tutorAddressDataDTO);
+                // Si hay errores de validación, responder con los errores
+                if (studentErrors.length > 0 || studentAddressErrors.length > 0 || tutorErrors.length > 0 || tutorAddressErrors.length > 0) {
+                    return res.status(400).json({
+                        studentErrors,
+                        studentAddressErrors,
+                        tutorErrors,
+                        tutorAddressErrors
+                    });
+                }
+                // Llamar a la función de servicio para actualizar la información
+                const updatestudent = yield student.updateStudentInfo(matricula, studentDataDTO, studentAddressDataDTO, tutorDataDTO, tutorAddressDataDTO);
+                res.status(200).json({ message: 'Student info updated successfully' });
+            }
+            catch (error) {
+                console.error('Error updating student info:', error);
                 res.status(500).json({ message: 'Internal server error', error: error.message });
             }
         });
