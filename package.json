@@ -4,7 +4,7 @@
   "main": "dist/app.js",
   "scripts": {
     "dev-windows": "concurrently \"tsc -watch\" \"nodemon dist/app.js\"",
-    "dependences": "npm install --include=dev && npm install --save-dev @types/cors @types/morgan @types/nodemailer @types/cors @types/morgan @types/jsonwebtoken @types/nodemailer",
+    "dependences": "npm install --include=dev && npm install --save-dev @types/cors @types/morgan @types/nodemailer @types/jsonwebtoken",
     "start": "npm install && npm run build && node dist/app.js",
     "build": "tsc",
     "dev-linux": "tsc -watch & nodemon dist/app.js"
