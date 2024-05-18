@@ -7,4 +7,5 @@ const router = (0, express_1.Router)();
 router.get('/', studentController.getStudentsList.bind(studentController));
 router.get('/cohorte', studentController.getStudentByCohorte.bind(studentController));
 router.get('/info/:matricula', studentController.studentsInfoMaterias.bind(studentController));
+router.get('/info/student/:token', studentController.getInfoStudents.bind(studentController));
 exports.default = router;

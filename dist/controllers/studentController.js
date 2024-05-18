@@ -31,9 +31,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StudentController = void 0;
 const student = __importStar(require("../models/student"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 class StudentController {
     getStudentsList(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -88,6 +92,40 @@ class StudentController {
             }
             catch (error) {
                 res.status((_b = error.http_status) !== null && _b !== void 0 ? _b : 500).json({ message: 'Error', error });
+            }
+        });
+    }
+    getInfoStudents(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("hola");
+            try {
+                const token = req.params.token || req.query.token;
+                if (!token || typeof token !== 'string') {
+                    return res.status(400).json({ message: 'Token is missing or invalid' });
+                }
+                // Verifica y decodifica el token
+                jsonwebtoken_1.default.verify(token, "your-256-bit-secret", (err, decoded) => __awaiter(this, void 0, void 0, function* () {
+                    if (err) {
+                        return res.status(401).json({ message: 'Invalid token', error: err.message });
+                    }
+                    // Asegúrate de que el token decodificado tiene la estructura esperada
+                    const decodedToken = decoded;
+                    console.log(decodedToken);
+                    if (!decodedToken.matricula) {
+                        return res.status(400).json({ message: 'Matricula is missing in the token' });
+                    }
+                    // Realiza la consulta con la matrícula obtenida del token decodificado
+                    try {
+                        const status = yield student.getstudentInfo(decodedToken.matricula);
+                        res.status(200).json({ message: 'Token received', payload: decodedToken, studentStatus: status });
+                    }
+                    catch (queryError) {
+                        res.status(500).json({ message: 'Error querying student info', error: queryError.message });
+                    }
+                }));
+            }
+            catch (error) {
+                res.status(500).json({ message: 'Internal server error', error: error.message });
             }
         });
     }

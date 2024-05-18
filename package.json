@@ -4,7 +4,7 @@
   "main": "dist/app.js",
   "scripts": {
     "dev-windows": "concurrently \"tsc -watch\" \"nodemon dist/app.js\"",
-    "dependences":"npm install --include=dev && npm install --save-dev @types/cors @types/morgan @types/nodemailer",
+    "dependences": "npm install --include=dev && npm install --save-dev @types/cors @types/morgan @types/nodemailer",
     "start": "npm install  && node dist/app.js",
     "build": "tsc",
     "dev-linux": "tsc -watch & nodemon dist/app.js"
@@ -24,6 +24,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "mysql2": "^3.6.3",
     "nodemailer": "^6.9.13",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@types/amqplib": "^0.10.4",
     "@types/cors": "^2.8.17",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/morgan": "^1.9.9",
     "@types/nodemailer": "^6.4.15",
     "concurrently": "^8.2.2",
