@@ -4,13 +4,11 @@
   "main": "dist/app.js",
   "scripts": {
     "dev-windows": "concurrently \"tsc -watch\" \"nodemon dist/app.js\"",
-    "dependences": "npm install ",
+    "dependences": "npm install",
     "start": "node dist/app.js",
-    "build": "tsc",
+    "build": "npm install --only=dev && tsc",
     "dev-linux": "tsc -watch & nodemon dist/app.js"
   },
-
-
   "keywords": [],
   "author": "",
   "license": "ISC",
