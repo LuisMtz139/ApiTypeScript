@@ -11,3 +11,5 @@ router.get('/', teacherController.docentesList.bind(teacherController));
 router.get('/docentes', teacherController.docentesListByName.bind(teacherController));
 
 export default router;
+
+
