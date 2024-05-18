@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@types/amqplib": "^0.10.4",
+    "@types/co": "^4.6.6",
     "@types/cors": "^2.8.17",
     "@types/morgan": "^1.9.9",
     "@types/nodemailer": "^6.4.15",
