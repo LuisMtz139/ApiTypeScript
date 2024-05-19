@@ -13,6 +13,8 @@ const studentRouter_1 = __importDefault(require("./routes/studentRouter"));
 const subjectsRouter_1 = __importDefault(require("./routes/subjectsRouter"));
 const emailRouter_1 = __importDefault(require("./routes/emailRouter"));
 const teacherRouter_1 = __importDefault(require("./routes/teacherRouter"));
+const asistencia_1 = __importDefault(require("./routes/asistencia"));
+require("reflect-metadata");
 const app = (0, express_1.default)();
 const signale = new signale_1.Signale();
 app.use(express_1.default.json());
@@ -23,6 +25,7 @@ app.use('/api/v1/estudiantes', studentRouter_1.default);
 app.use('/api/v1/subjects', subjectsRouter_1.default);
 app.use('/api/v1/email', emailRouter_1.default);
 app.use('/api/v1/docentes', teacherRouter_1.default);
+app.use('/api/v1/asistencia', asistencia_1.default);
 dotenv_1.default.config();
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
