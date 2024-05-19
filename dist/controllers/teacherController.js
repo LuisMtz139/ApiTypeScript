@@ -69,5 +69,20 @@ class TeacherController {
             }
         });
     }
+    getStudentsGrupo(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id_docente } = req.params;
+                const subje = yield teacher.getStudentsGrupo(id_docente);
+                res.status(200).json({
+                    data: subje,
+                    message: "api.v1.subjects",
+                });
+            }
+            catch (error) {
+                res.status(500).json({ message: 'Error', error });
+            }
+        });
+    }
 }
 exports.TeacherController = TeacherController;

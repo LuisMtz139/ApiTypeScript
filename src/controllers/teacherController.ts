@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import * as teacher from '../models/teacher';
+import { group } from 'console';
 
 export class TeacherController {
     async   docentesList(req: Request, res: Response) {
@@ -32,5 +33,19 @@ export class TeacherController {
             res.status(500).json({ message: 'Error', error });
         }
     }
+async getStudentsGrupo(req: Request, res: Response) {
+    try {
+        const { id_docente } = req.params;
+        const subje = await teacher.getStudentsGrupo(id_docente);
+        res.status(200).json({
+            data: subje,
+            message: "api.v1.subjects",
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error', error });
+    }
+}
+
+
 }
 

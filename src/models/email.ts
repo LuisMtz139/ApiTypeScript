@@ -17,7 +17,7 @@ export async function sendEmail(cohorte: string) {
     });
 
     const token = crypto.randomBytes(20).toString('hex');
-    generatedToken = token; // Store the token for later verification
+    generatedToken = token; // Store the token for later verification payload 
 
     const expires = new Date();
     expires.setMinutes(expires.getMinutes() + 1); // The token expires in 2 minutes
