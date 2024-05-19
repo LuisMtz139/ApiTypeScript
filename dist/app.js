@@ -22,7 +22,7 @@ app.use('/api/v1/cohortes', generationRouter_1.default);
 app.use('/api/v1/estudiantes', studentRouter_1.default);
 app.use('/api/v1/subjects', subjectsRouter_1.default);
 app.use('/api/v1/email', emailRouter_1.default);
-app.use('/api/v1/teachers', teacherRouter_1.default);
+app.use('/api/v1/docentes', teacherRouter_1.default);
 dotenv_1.default.config();
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

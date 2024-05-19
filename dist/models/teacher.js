@@ -94,6 +94,7 @@ const getStudentsGrupo = (id_docente) => __awaiter(void 0, void 0, void 0, funct
             g.grupo,
             a.nombre AS asignatura_nombre,
             a.abreviatura,
+            GROUP_CONCAT(DISTINCT e.id ORDER BY e.id ASC SEPARATOR ', ') AS estudiante_ids,
             GROUP_CONCAT(DISTINCT e.matricula ORDER BY e.matricula ASC SEPARATOR ', ') AS matriculas,
             GROUP_CONCAT(DISTINCT p2.nombre ORDER BY p2.nombre ASC SEPARATOR ', ') AS estudiantes_nombres
         FROM 
@@ -118,13 +119,14 @@ const getStudentsGrupo = (id_docente) => __awaiter(void 0, void 0, void 0, funct
         const [rows] = yield database_1.default.query(query, [id_docente]);
         // Estructurar los datos en un formato más lógico
         const result = rows.reduce((acc, row) => {
-            const { id_docente, docente_nombre, grupo, asignatura_nombre, abreviatura, matriculas, estudiantes_nombres } = row;
+            const { id_docente, docente_nombre, grupo, asignatura_nombre, abreviatura, estudiante_ids, matriculas, estudiantes_nombres } = row;
             if (!acc.id_docente) {
                 acc.id_docente = id_docente;
                 acc.docente_nombre = docente_nombre;
                 acc.grupos = [];
             }
             const estudiantes = estudiantes_nombres.split(', ').map((nombre, index) => ({
+                id: estudiante_ids.split(', ')[index],
                 nombre,
                 matricula: matriculas.split(', ')[index]
             }));

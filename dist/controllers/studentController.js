@@ -41,6 +41,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const class_transformer_1 = require("class-transformer");
 const updateInfoStudent_1 = require("../dto/updateInfoStudent");
 const class_validator_1 = require("class-validator");
+const student_1 = require("../models/student"); // Importación nombrada
 class StudentController {
     getStudentsList(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -136,12 +137,12 @@ class StudentController {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("Recibiendo datos para actualizar información del estudiante");
             try {
-                const { matricula, studentData, studentAddressData, tutorData, tutorAddressData } = req.body;
+                const { matricula, student, student_address, tutor, tutor_address } = req.body;
                 // Transformar y validar los datos del estudiante
-                const studentDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateStudentDTO, studentData);
-                const studentAddressDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateStudentAddressDTO, studentAddressData);
-                const tutorDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateTutorDTO, tutorData);
-                const tutorAddressDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateTutorAddressDTO, tutorAddressData);
+                const studentDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateStudentDTO, student);
+                const studentAddressDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateStudentAddressDTO, student_address);
+                const tutorDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateTutorDTO, tutor);
+                const tutorAddressDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateTutorAddressDTO, tutor_address);
                 const studentErrors = yield (0, class_validator_1.validate)(studentDataDTO);
                 const studentAddressErrors = yield (0, class_validator_1.validate)(studentAddressDataDTO);
                 const tutorErrors = yield (0, class_validator_1.validate)(tutorDataDTO);
@@ -156,7 +157,7 @@ class StudentController {
                     });
                 }
                 // Llamar a la función de servicio para actualizar la información
-                const updatestudent = yield student.updateStudentInfo(matricula, studentDataDTO, studentAddressDataDTO, tutorDataDTO, tutorAddressDataDTO);
+                yield (0, student_1.updateStudentInfo)(matricula, studentDataDTO, studentAddressDataDTO, tutorDataDTO, tutorAddressDataDTO);
                 res.status(200).json({ message: 'Student info updated successfully' });
             }
             catch (error) {

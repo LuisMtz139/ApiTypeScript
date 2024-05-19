@@ -72,7 +72,6 @@ export const docentesListByName = async (name: string): Promise<ApiResponse<RowD
         };
     }
 };
-
 export const getStudentsGrupo = async (id_docente: string): Promise<ApiResponse<any>> => {
     try {
         // Aumenta el tamaño máximo de GROUP_CONCAT en la sesión de MySQL
@@ -85,6 +84,7 @@ export const getStudentsGrupo = async (id_docente: string): Promise<ApiResponse<
             g.grupo,
             a.nombre AS asignatura_nombre,
             a.abreviatura,
+            GROUP_CONCAT(DISTINCT e.id ORDER BY e.id ASC SEPARATOR ', ') AS estudiante_ids,
             GROUP_CONCAT(DISTINCT e.matricula ORDER BY e.matricula ASC SEPARATOR ', ') AS matriculas,
             GROUP_CONCAT(DISTINCT p2.nombre ORDER BY p2.nombre ASC SEPARATOR ', ') AS estudiantes_nombres
         FROM 
@@ -110,7 +110,7 @@ export const getStudentsGrupo = async (id_docente: string): Promise<ApiResponse<
 
         // Estructurar los datos en un formato más lógico
         const result = rows.reduce((acc: any, row: any) => {
-            const { id_docente, docente_nombre, grupo, asignatura_nombre, abreviatura, matriculas, estudiantes_nombres } = row;
+            const { id_docente, docente_nombre, grupo, asignatura_nombre, abreviatura, estudiante_ids, matriculas, estudiantes_nombres } = row;
 
             if (!acc.id_docente) {
                 acc.id_docente = id_docente;
@@ -119,6 +119,7 @@ export const getStudentsGrupo = async (id_docente: string): Promise<ApiResponse<
             }
 
             const estudiantes = estudiantes_nombres.split(', ').map((nombre: string, index: number) => ({
+                id: estudiante_ids.split(', ')[index],
                 nombre,
                 matricula: matriculas.split(', ')[index]
             }));

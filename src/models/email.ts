@@ -28,7 +28,6 @@ export async function sendEmail(cohorte: string) {
         from: process.env.EMAIL_USERNAME,
         to: ruta,
         subject: "Hola beunas tadres",
-        // Add the token and expiration date as parameters in the URL
         html: `<p>ssssss</p><p>Click <a href='http://yourserver.com/verify?token=${token}&expires=${expires.getTime()}'>here</a> to visit our site.</p>`
     };
 

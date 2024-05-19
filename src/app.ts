@@ -21,7 +21,7 @@ app.use('/api/v1/cohortes', cohorteRoutes);
 app.use('/api/v1/estudiantes',studentRouter );
 app.use('/api/v1/subjects',subjectsRouter );
 app.use('/api/v1/email', personaRouter);
-app.use('/api/v1/teachers',teacherRouter);
+app.use('/api/v1/docentes',teacherRouter);
 
 dotenv.config();
 

@@ -180,6 +180,7 @@ function updateStudentInfo(matricula, studentData, studentAddressData, tutorData
         if (tutorAddressErrors.length > 0) {
             throw new Error(`Validation failed for tutor address data: ${tutorAddressErrors}`);
         }
+        // Actualizar datos del estudiante
         const updateStudentQuery = `
     UPDATE personas
     SET 
@@ -195,6 +196,16 @@ function updateStudentInfo(matricula, studentData, studentAddressData, tutorData
         WHERE matricula = ?
     );
     `;
+        yield database_1.default.query(updateStudentQuery, [
+            studentData.nombre,
+            studentData.apellido_paterno,
+            studentData.apellido_materno,
+            studentData.telefono,
+            studentData.curp,
+            studentData.sexo,
+            matricula
+        ]);
+        // Actualizar dirección del estudiante
         const updateStudentAddressQuery = `
     UPDATE direcciones
     SET 
@@ -212,6 +223,18 @@ function updateStudentInfo(matricula, studentData, studentAddressData, tutorData
         WHERE matricula = ?
     );
     `;
+        yield database_1.default.query(updateStudentAddressQuery, [
+            studentAddressData.calle_1,
+            studentAddressData.calle_2,
+            studentAddressData.numero_interior,
+            studentAddressData.numero_exterior,
+            studentAddressData.colonia,
+            studentAddressData.ciudad,
+            studentAddressData.codigo_postal,
+            studentAddressData.referencias_direccion,
+            matricula
+        ]);
+        // Actualizar datos del tutor
         const updateTutorQuery = `
     UPDATE personas
     SET 
@@ -227,6 +250,16 @@ function updateStudentInfo(matricula, studentData, studentAddressData, tutorData
         WHERE matricula = ?
     );
     `;
+        yield database_1.default.query(updateTutorQuery, [
+            tutorData.nombre,
+            tutorData.apellido_paterno,
+            tutorData.apellido_materno,
+            tutorData.telefono,
+            tutorData.curp,
+            tutorData.sexo,
+            matricula
+        ]);
+        // Actualizar dirección del tutor
         const updateTutorAddressQuery = `
     UPDATE direcciones
     SET 
@@ -244,39 +277,6 @@ function updateStudentInfo(matricula, studentData, studentAddressData, tutorData
         WHERE matricula = ?
     );
     `;
-        // Actualizar datos del estudiante
-        yield database_1.default.query(updateStudentQuery, [
-            studentData.nombre,
-            studentData.apellido_paterno,
-            studentData.apellido_materno,
-            studentData.telefono,
-            studentData.curp,
-            studentData.sexo,
-            matricula
-        ]);
-        // Actualizar dirección del estudiante
-        yield database_1.default.query(updateStudentAddressQuery, [
-            studentAddressData.calle_1,
-            studentAddressData.calle_2,
-            studentAddressData.numero_interior,
-            studentAddressData.numero_exterior,
-            studentAddressData.colonia,
-            studentAddressData.ciudad,
-            studentAddressData.codigo_postal,
-            studentAddressData.referencias_direccion,
-            matricula
-        ]);
-        // Actualizar datos del tutor
-        yield database_1.default.query(updateTutorQuery, [
-            tutorData.nombre,
-            tutorData.apellido_paterno,
-            tutorData.apellido_materno,
-            tutorData.telefono,
-            tutorData.curp,
-            tutorData.sexo,
-            matricula
-        ]);
-        // Actualizar dirección del tutor
         yield database_1.default.query(updateTutorAddressQuery, [
             tutorAddressData.calle_1,
             tutorAddressData.calle_2,
