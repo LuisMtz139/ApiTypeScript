@@ -21,7 +21,7 @@ function createAttendances(grupo_id, attendanceData) {
         if (errors.length > 0) {
             throw new Error(`Validation failed for attendance data: ${errors}`);
         }
-        for (const attendance of attendanceData.attendances) {
+        for (const attendance of attendanceData.asistencias) {
             const createAttendanceQuery = `
         INSERT INTO asistencia (estudiante_id, grupo_id, comentarios)
         VALUES (?, ?, ?);
