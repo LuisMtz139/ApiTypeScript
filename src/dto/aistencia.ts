@@ -13,5 +13,5 @@ export class AttendanceItemDTO {
 export class CreateAttendanceDTO {
     @IsArray()
     @ValidateNested({ each: true })
-    attendances!: AttendanceItemDTO[];
+    asistencias!: AttendanceItemDTO[];
 }

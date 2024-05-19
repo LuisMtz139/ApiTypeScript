@@ -31,4 +31,4 @@ __decorate([
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.ValidateNested)({ each: true }),
     __metadata("design:type", Array)
-], CreateAttendanceDTO.prototype, "attendances", void 0);
+], CreateAttendanceDTO.prototype, "asistencias", void 0);
