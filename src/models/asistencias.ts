@@ -24,3 +24,15 @@ export async function createAttendances(grupo_id: number, attendanceData: Create
         ]);
     }
 }
+
+export const deleteAsistencias = async (grupo_id: number) => {
+
+    const query = `
+        DELETE FROM asistencia 
+            WHERE estudiante_id = ${grupo_id};
+
+    `;
+
+    const [rows] = await db.query(query);
+    return rows;
+}

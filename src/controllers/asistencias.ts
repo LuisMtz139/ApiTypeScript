@@ -3,7 +3,7 @@ import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { CreateAttendanceDTO } from '../dto/aistencia';
 import { createAttendances } from '../models/asistencias';
-
+import * as asistencia from '../models/asistencias';
 
 
 export class AsistenciaController {
@@ -37,6 +37,23 @@ export class AsistenciaController {
             res.status(500).json({ message: 'Internal server error', error: error.message });
         }
     }
+
+
+async deleteAsistenciasController(req: Request, res: Response) {
+    try {
+        const id_docente = Number(req.params.id_docente);
+        const subje = await asistencia.deleteAsistencias(id_docente);
+        res.status(200).json({
+            data: subje,
+            message: "api.v1.subjects",
+        });
+        
+    } catch (error: any) {
+        console.error('Error creating attendance records:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+}
+    
 
 }
 

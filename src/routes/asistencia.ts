@@ -7,6 +7,6 @@ const personasController = new AsistenciaController();
 
 
 router.post('/agregar', personasController.createAttendanceController);
-
+router.delete('/asistencias/:asistencia_id', personasController.deleteAsistenciasController);
 
 export default router;

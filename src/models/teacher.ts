@@ -74,7 +74,6 @@ export const docentesListByName = async (name: string): Promise<ApiResponse<RowD
 };
 export const getStudentsGrupo = async (id_docente: string): Promise<ApiResponse<any>> => {
     try {
-        // Aumenta el tamaño máximo de GROUP_CONCAT en la sesión de MySQL
         await db.query('SET SESSION group_concat_max_len = 10000');
 
         const query = `
