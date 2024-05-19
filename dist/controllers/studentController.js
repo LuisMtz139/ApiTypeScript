@@ -137,12 +137,12 @@ class StudentController {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("Recibiendo datos para actualizar información del estudiante");
             try {
-                const { matricula, student, student_address, tutor, tutor_address } = req.body;
+                const { matricula, studentData, studentAddressData, tutorData, tutorAddressData } = req.body;
                 // Transformar y validar los datos del estudiante
-                const studentDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateStudentDTO, student);
-                const studentAddressDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateStudentAddressDTO, student_address);
-                const tutorDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateTutorDTO, tutor);
-                const tutorAddressDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateTutorAddressDTO, tutor_address);
+                const studentDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateStudentDTO, studentData);
+                const studentAddressDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateStudentAddressDTO, studentAddressData);
+                const tutorDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateTutorDTO, tutorData);
+                const tutorAddressDataDTO = (0, class_transformer_1.plainToClass)(updateInfoStudent_1.UpdateTutorAddressDTO, tutorAddressData);
                 const studentErrors = yield (0, class_validator_1.validate)(studentDataDTO);
                 const studentAddressErrors = yield (0, class_validator_1.validate)(studentAddressDataDTO);
                 const tutorErrors = yield (0, class_validator_1.validate)(tutorDataDTO);
