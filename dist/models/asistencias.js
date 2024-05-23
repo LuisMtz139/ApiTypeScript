@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createAttendances = void 0;
+exports.deleteAsistencias = exports.createAttendances = void 0;
 const class_validator_1 = require("class-validator");
 const database_1 = __importDefault(require("../config/database"));
 function createAttendances(grupo_id, attendanceData) {
@@ -35,3 +35,13 @@ function createAttendances(grupo_id, attendanceData) {
     });
 }
 exports.createAttendances = createAttendances;
+const deleteAsistencias = (grupo_id) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = `
+        DELETE FROM asistencia 
+            WHERE estudiante_id = ${grupo_id};
+
+    `;
+    const [rows] = yield database_1.default.query(query);
+    return rows;
+});
+exports.deleteAsistencias = deleteAsistencias;

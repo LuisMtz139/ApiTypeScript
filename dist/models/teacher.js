@@ -85,7 +85,6 @@ const docentesListByName = (name) => __awaiter(void 0, void 0, void 0, function*
 exports.docentesListByName = docentesListByName;
 const getStudentsGrupo = (id_docente) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Aumenta el tamaño máximo de GROUP_CONCAT en la sesión de MySQL
         yield database_1.default.query('SET SESSION group_concat_max_len = 10000');
         const query = `
         SELECT 

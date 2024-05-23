@@ -35,22 +35,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TeacherController = void 0;
 const teacher = __importStar(require("../models/teacher"));
 class TeacherController {
+    handleDocentesRequest(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const name = req.query.name;
+            if (name) {
+                return this.docentesListByName(req, res);
+            }
+            else {
+                return this.docentesList(req, res);
+            }
+        });
+    }
     docentesList(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const limit = parseInt(req.query.limit, 10) || 10; // Default limit
                 const page = parseInt(req.query.page, 10) || 1; // Default page
                 const offset = (page - 1) * limit;
-                const subje = yield teacher.docentesList(limit, offset);
+                const result = yield teacher.docentesList(limit, offset);
                 res.status(200).json({
-                    data: subje,
-                    message: "api.v1.subjects",
+                    data: result.data,
+                    message: result.message,
                     page: page,
                     limit: limit,
                 });
             }
             catch (error) {
-                res.status(500).json({ message: 'Error', error });
+                res.status(500).json({ message: 'Error fetching docentes list', error });
             }
         });
     }
@@ -58,14 +69,14 @@ class TeacherController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const name = req.query.name;
-                const subje = yield teacher.docentesListByName(name);
+                const result = yield teacher.docentesListByName(name);
                 res.status(200).json({
-                    data: subje,
-                    message: "api.v1.subjects",
+                    data: result.data,
+                    message: result.message,
                 });
             }
             catch (error) {
-                res.status(500).json({ message: 'Error', error });
+                res.status(500).json({ message: 'Error fetching docentes list by name', error });
             }
         });
     }
@@ -73,14 +84,14 @@ class TeacherController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id_docente } = req.params;
-                const subje = yield teacher.getStudentsGrupo(id_docente);
+                const result = yield teacher.getStudentsGrupo(id_docente);
                 res.status(200).json({
-                    data: subje,
-                    message: "api.v1.subjects",
+                    data: result.data,
+                    message: result.message,
                 });
             }
             catch (error) {
-                res.status(500).json({ message: 'Error', error });
+                res.status(500).json({ message: 'Error fetching students by group', error });
             }
         });
     }

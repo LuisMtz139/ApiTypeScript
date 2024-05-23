@@ -43,11 +43,21 @@ const updateInfoStudent_1 = require("../dto/updateInfoStudent");
 const class_validator_1 = require("class-validator");
 const student_1 = require("../models/student"); // Importación nombrada
 class StudentController {
+    handleGetStudents(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { cohorte } = req.query;
+            if (cohorte) {
+                return this.getStudentByCohorte(req, res);
+            }
+            else {
+                return this.getStudentsList(req, res);
+            }
+        });
+    }
     getStudentsList(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
             try {
-                const { cohorte } = req.query;
                 const limit = parseInt(req.query.limit, 10) || 10; // Límite por defecto
                 const page = parseInt(req.query.page, 10) || 1; // Página por defecto
                 const offset = (page - 1) * limit;
@@ -91,8 +101,8 @@ class StudentController {
             var _a, _b;
             try {
                 const { matricula } = req.params;
-                const studenst = yield student.studentInfo((_a = matricula === null || matricula === void 0 ? void 0 : matricula.toString()) !== null && _a !== void 0 ? _a : '');
-                res.json(studenst);
+                const students = yield student.studentInfo((_a = matricula === null || matricula === void 0 ? void 0 : matricula.toString()) !== null && _a !== void 0 ? _a : '');
+                res.json(students);
             }
             catch (error) {
                 res.status((_b = error.http_status) !== null && _b !== void 0 ? _b : 500).json({ message: 'Error', error });
@@ -101,7 +111,6 @@ class StudentController {
     }
     getInfoStudents(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("hola");
             try {
                 const token = req.params.token || req.query.token;
                 if (!token || typeof token !== 'string') {
@@ -114,7 +123,6 @@ class StudentController {
                     }
                     // Asegúrate de que el token decodificado tiene la estructura esperada
                     const decodedToken = decoded;
-                    console.log(decodedToken);
                     if (!decodedToken.matricula) {
                         return res.status(400).json({ message: 'Matricula is missing in the token' });
                     }
@@ -135,7 +143,6 @@ class StudentController {
     }
     updateStudentController(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("Recibiendo datos para actualizar información del estudiante");
             try {
                 const { matricula, studentData, studentAddressData, tutorData, tutorAddressData } = req.body;
                 // Transformar y validar los datos del estudiante
@@ -161,7 +168,6 @@ class StudentController {
                 res.status(200).json({ message: 'Student info updated successfully' });
             }
             catch (error) {
-                console.error('Error updating student info:', error);
                 res.status(500).json({ message: 'Internal server error', error: error.message });
             }
         });
