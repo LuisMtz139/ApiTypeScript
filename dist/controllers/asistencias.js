@@ -67,15 +67,14 @@ class AsistenciaController {
     deleteAsistenciasController(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const id_docente = Number(req.params.id_docente);
-                const subje = yield asistencia.deleteAsistencias(id_docente);
+                const asistencia_id = Number(req.params.asistencia_id);
+                const subje = yield asistencia.deleteAsistencias(asistencia_id);
                 res.status(200).json({
-                    data: subje,
-                    message: "api.v1.subjects",
+                    message: "delete asistencia successfull",
                 });
             }
             catch (error) {
-                console.error('Error creating attendance records:', error);
+                console.error('Error deleting attendance records:', error);
                 res.status(500).json({ message: 'Internal server error', error: error.message });
             }
         });

@@ -26,10 +26,10 @@ export async function createAttendances(grupo_id: number, attendanceData: Create
 }
 
 export const deleteAsistencias = async (grupo_id: number) => {
-
+    console.log('grupo_id:', grupo_id);
     const query = `
-        DELETE FROM asistencia 
-            WHERE estudiante_id = ${grupo_id};
+          
+    delete  from  asistencia where id = ${grupo_id};
 
     `;
 

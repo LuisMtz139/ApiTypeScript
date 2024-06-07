@@ -16,9 +16,9 @@ exports.listSubjects = void 0;
 const database_1 = __importDefault(require("../config/database"));
 const listSubjects = (limit, offset) => __awaiter(void 0, void 0, void 0, function* () {
     const query = `
-        SELECT nombre, cuatrimestre
+    SELECT nombre, abreviatura , creditos, horas_semana  cuatrimestre
         FROM asignaturas
-        ORDER BY cuatrimestre + 0 ASC
+            ORDER BY cuatrimestre + 0 asc
         LIMIT ? OFFSET ?;
     `;
     const [rows] = yield database_1.default.query(query, [limit, offset]);

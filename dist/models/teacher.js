@@ -52,7 +52,8 @@ const docentesListByName = (name) => __awaiter(void 0, void 0, void 0, function*
     try {
         const query = `
         SELECT 
-            d.id,
+        d.id,
+        g.id ,
             CONCAT(p.nombre) AS nombre_completo,
             GROUP_CONCAT(DISTINCT g.grupo ORDER BY g.grupo SEPARATOR ', ') AS grupos
         FROM 

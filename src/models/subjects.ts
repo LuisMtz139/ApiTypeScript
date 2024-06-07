@@ -3,9 +3,9 @@ import db from '../config/database';
 
 export const listSubjects = async(limit: number, offset: number) => {
     const query = `
-        SELECT nombre, cuatrimestre
+    SELECT nombre, abreviatura , creditos, horas_semana  cuatrimestre
         FROM asignaturas
-        ORDER BY cuatrimestre + 0 ASC
+            ORDER BY cuatrimestre + 0 asc
         LIMIT ? OFFSET ?;
     `;
 

@@ -21,6 +21,7 @@ export const getGenerations = async (req: Request, res: Response) => {
     }
 }
 
+
 export const getGenerationDetail = async (req: Request, res: Response) => {
     try {
         const cohorte = await generation.getGenerationDetail(req.params.cohorte);

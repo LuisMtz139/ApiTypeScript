@@ -5,8 +5,8 @@ const router = Router();
 const personasController = new PersonasController();
 
 
-router.get('/sendEmail/:cohorte', personasController.sendEmail);
-router.post('/verifyEmail', personasController.verifyEmail);
+router.get('/:matriucla/verificar-informacion', personasController.sendEmail);
+router.post('/verificar-informacion', personasController.verifyEmail);
 
 
 export default router;

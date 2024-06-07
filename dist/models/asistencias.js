@@ -36,9 +36,10 @@ function createAttendances(grupo_id, attendanceData) {
 }
 exports.createAttendances = createAttendances;
 const deleteAsistencias = (grupo_id) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('grupo_id:', grupo_id);
     const query = `
-        DELETE FROM asistencia 
-            WHERE estudiante_id = ${grupo_id};
+          
+    delete  from  asistencia where id = ${grupo_id};
 
     `;
     const [rows] = yield database_1.default.query(query);
