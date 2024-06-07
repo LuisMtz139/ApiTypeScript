@@ -43,18 +43,14 @@ class AsistenciaController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const estudiante_id = parseInt(req.query.id);
-                // Verificar que el id es un número válido
                 if (isNaN(estudiante_id)) {
                     return res.status(400).json({ message: 'Invalid student ID' });
                 }
-                // Transformar y validar los datos de asistencia
                 const attendanceData = (0, class_transformer_1.plainToClass)(aistencia_1.CreateAttendanceDTO, req.body);
-                // Validar los datos
                 const errors = yield (0, class_validator_1.validate)(attendanceData);
                 if (errors.length > 0) {
                     return res.status(400).json({ errors });
                 }
-                // Llamar al servicio para crear la asistencia
                 yield (0, asistencias_1.createAttendances)(estudiante_id, attendanceData);
                 res.status(200).json({ message: 'Attendance records created successfully' });
             }

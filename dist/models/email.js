@@ -16,6 +16,7 @@ exports.verifyEmail = exports.sendEmail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const crypto_1 = __importDefault(require("crypto"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const database_1 = __importDefault(require("../config/database")); // Asegúrate de que la ruta sea correcta
 dotenv_1.default.config();
 let generatedToken = null;
 function sendEmail(cohorte) {
@@ -30,17 +31,21 @@ function sendEmail(cohorte) {
         const token = crypto_1.default.randomBytes(20).toString('hex');
         generatedToken = token; // Store the token for later verification payload 
         const expires = new Date();
-        expires.setMinutes(expires.getMinutes() + 1); // The token expires in 2 minutes
+        expires.setMinutes(expires.getMinutes() + 2); // The token expires in 2 minutes
         let ruta = `${cohorte}@ids.upchiapas.edu.mx`;
         const mailOptions = {
             from: process.env.EMAIL_USERNAME,
             to: ruta,
-            subject: "Hola beunas tadres",
-            html: `<p>ssssss</p><p>Click <a href='http://yourserver.com/verify?token=${token}&expires=${expires.getTime()}'>here</a> to visit our site.</p>`
+            subject: "Hola buenas tardes",
+            html: `<p>Hola,</p><p>Click <a href='http://yourserver.com/verify?token=${token}&expires=${expires.getTime()}'>aquí</a> para verificar tu email.</p>`
         };
         try {
             const info = yield transporter.sendMail(mailOptions);
             console.log('Email sent: ' + info.response);
+            // Guardar el token y la fecha de generación en la base de datos
+            const query = 'UPDATE estudiantes SET token = ?, token_valido = ? WHERE matricula= ?';
+            yield database_1.default.query(query, [token, expires, cohorte]);
+            console.log('Token y fecha de generación guardados en la base de datos.');
         }
         catch (error) {
             console.error('Error sending email: ' + error);
@@ -50,13 +55,28 @@ function sendEmail(cohorte) {
 exports.sendEmail = sendEmail;
 function verifyEmail(token) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('tokenssssssssss:', token);
-        if (token === generatedToken) {
-            console.log('Email verified successfully');
-            return 'successPage.html';
+        try {
+            const query = 'SELECT token, token_valido FROM estudiantes WHERE token = ?';
+            const [rows] = yield database_1.default.query(query, [token]);
+            if (rows.length > 0) {
+                const { token_valido } = rows[0];
+                const now = new Date();
+                if (now <= new Date(token_valido)) {
+                    console.log('Email verified successfully');
+                    return 'successPage.html';
+                }
+                else {
+                    console.log('Token expired');
+                    return 'errorPage.html';
+                }
+            }
+            else {
+                console.log('Email verification failed');
+                return 'errorPage.html';
+            }
         }
-        else {
-            console.log('Email verification failed');
+        catch (error) {
+            console.error('Error verifying email: ' + error);
             return 'errorPage.html';
         }
     });
